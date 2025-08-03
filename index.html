@@ -133,7 +133,7 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
             try {
                 const { data, error } = await supabaseClient
                     .from('countries')
-                    .select('*')
+                    .select('country')
                     .order('created_at', { ascending: false });
                 
                 if (error) {
