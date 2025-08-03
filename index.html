@@ -130,7 +130,7 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         // Load all countries from database
        async function loadCountries() {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('countries')
                     .select('id, country')
                     .order('id', { ascending: false });
