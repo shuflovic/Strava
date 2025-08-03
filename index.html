@@ -109,8 +109,7 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
                     .from('countries')
                     .insert([
                         { 
-                            country: countryName,
-                            created_at: new Date().toISOString()
+                            country: countryName
                         }
                     ]);
                 
