@@ -132,7 +132,7 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
             try {
                 const { data, error } = await supabaseClient
                     .from('countries')
-                    .select('country')
+                    .select('country', 'id')
                     .order('created_at', { ascending: false });
                 
                 if (error) {
@@ -142,7 +142,7 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
                 } else {
                     if (data && data.length > 0) {
                         const listHtml = data.map(item => 
-                            `• ${item.country} (added: ${new Date(item.created_at).toLocaleDateString()})`
+                            `• ${id} - ${item.country})`
                         ).join('<br>');
                         document.getElementById('countryList').innerHTML = listHtml;
                     } else {
