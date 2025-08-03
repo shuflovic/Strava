@@ -1,17 +1,190 @@
-
 <!DOCTYPE html>
-<html lang="sk-en">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Strava/title>
-    <link rel="stylesheet" href="style.css">
-      <button>strava authorization</button>
+    <title>Country List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .container {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .country-list {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        input {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
 </head>
 <body>
-<header>
-</header>
+    <div class="container">
+        <h1>Country Database</h1>
+        
+        <div>
+            <input type="text" id="countryInput" placeholder="Enter country name" value="USA">
+            <button onclick="addCountry()">Add Country</button>
+            <button onclick="loadCountries()">Load All Countries</button>
+        </div>
+        
+        <div id="status"></div>
+        
+        <div class="country-list">
+            <h3>Countries in Database:</h3>
+            <div id="countryList">Click "Load All Countries" to see the list</div>
+        </div>
+    </div>
 
+    <script>
+        // MongoDB Data API configuration
+        const DATA_API_URL = 'YOUR_DATA_API_URL_HERE'; // We'll get this from MongoDB Atlas
+        const API_KEY = 'YOUR_API_KEY_HERE'; // We'll get this from MongoDB Atlas
+        const DATABASE = 'countries_db';
+        const COLLECTION = 'countries';
+
+        // Show status messages
+        function showStatus(message, isError = false) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.innerHTML = `<div class="status ${isError ? 'error' : 'success'}">${message}</div>`;
+            setTimeout(() => {
+                statusDiv.innerHTML = '';
+            }, 3000);
+        }
+
+        // Add a country to the database
+        async function addCountry() {
+            const countryInput = document.getElementById('countryInput');
+            const countryName = countryInput.value.trim();
+            
+            if (!countryName) {
+                showStatus('Please enter a country name', true);
+                return;
+            }
+
+            // For now, we'll simulate adding to database
+            // Later we'll replace this with actual MongoDB API call
+            console.log('Would add country:', countryName);
+            showStatus(`Would add "${countryName}" to database (MongoDB not configured yet)`);
+            
+            // Clear input
+            countryInput.value = '';
+            
+            // TODO: Replace with actual MongoDB API call
+            /*
+            try {
+                const response = await fetch(`${DATA_API_URL}/action/insertOne`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'api-key': API_KEY
+                    },
+                    body: JSON.stringify({
+                        dataSource: 'Cluster0',
+                        database: DATABASE,
+                        collection: COLLECTION,
+                        document: {
+                            country: countryName,
+                            dateAdded: new Date().toISOString()
+                        }
+                    })
+                });
+                
+                if (response.ok) {
+                    showStatus(`Added "${countryName}" successfully!`);
+                    loadCountries(); // Refresh the list
+                } else {
+                    showStatus('Error adding country', true);
+                }
+            } catch (error) {
+                showStatus('Connection error', true);
+                console.error('Error:', error);
+            }
+            */
+        }
+
+        // Load all countries from database
+        async function loadCountries() {
+            // For now, we'll show a sample list
+            // Later we'll replace this with actual MongoDB API call
+            document.getElementById('countryList').innerHTML = 'MongoDB not configured yet - showing sample data:<br>• USA<br>• Canada<br>• Mexico';
+            
+            // TODO: Replace with actual MongoDB API call
+            
+            try {
+                const response = await fetch(`${DATA_API_URL}/action/find`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'api-key': API_KEY
+                    },
+                    body: JSON.stringify({
+                        dataSource: 'Cluster0',
+                        database: DATABASE,
+                        collection: COLLECTION,
+                        filter: {}
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.documents) {
+                    const listHtml = data.documents.map(doc => 
+                        `• ${doc.country} (added: ${new Date(doc.dateAdded).toLocaleDateString()})`
+                    ).join('<br>');
+                    document.getElementById('countryList').innerHTML = listHtml || 'No countries found';
+                } else {
+                    document.getElementById('countryList').innerHTML = 'No countries found';
+                }
+            } catch (error) {
+                showStatus('Error loading countries', true);
+                console.error('Error:', error);
+            }
+            
+        }
+
+        // Load countries when page loads
+        window.onload = function() {
+            loadCountries();
+        };
+    </script>
 </body>
 </html>
-
