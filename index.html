@@ -139,7 +139,7 @@ function handleKeyPress(event) {
                 const { data, error } = await supabaseClient
                     .from('countries')
                     .select('id, country')
-                    .order('id', { ascending: true });
+                    .order('id', { ascending: false });
                 
                 if (error) {
                     showStatus(`Error loading countries: ${error.message}`, true);
