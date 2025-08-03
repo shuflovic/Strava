@@ -334,7 +334,7 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
             }
 
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('lists')
                     .insert([{
                         name: listName,
@@ -358,7 +358,7 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         // Load all lists
         async function loadLists() {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('lists')
                     .select('*')
                     .order('created_at', { ascending: true });
@@ -454,7 +454,7 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
             }
 
             try {
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('list_items')
                     .insert([{
                         list_id: listId,
@@ -478,7 +478,7 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         // Load items for a specific list
         async function loadListItems(listId) {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('list_items')
                     .select('*')
                     .eq('list_id', listId)
@@ -524,7 +524,7 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
                     .eq('list_id', listId);
 
                 // Delete list
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('lists')
                     .delete()
                     .eq('id', listId);
