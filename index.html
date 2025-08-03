@@ -128,12 +128,12 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         }
 
         // Load all countries from database
-        async function loadCountries() {
+       async function loadCountries() {
             try {
-                const { data, error } = await supabaseClient
+                const { data, error } = await supabase
                     .from('countries')
-                    .select('country', 'id')
-                    .order('created_at', { ascending: false });
+                    .select('id, country')
+                    .order('id', { ascending: false });
                 
                 if (error) {
                     showStatus(`Error loading countries: ${error.message}`, true);
@@ -142,7 +142,7 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
                 } else {
                     if (data && data.length > 0) {
                         const listHtml = data.map(item => 
-                            `• ${id} - ${item.country})`
+                            `${item.id}: ${item.country}`
                         ).join('<br>');
                         document.getElementById('countryList').innerHTML = listHtml;
                     } else {
@@ -155,6 +155,7 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
                 console.error('Error:', error);
             }
         }
+
 
         // Load countries when page loads
         window.onload = function() {
