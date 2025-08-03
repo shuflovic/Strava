@@ -62,16 +62,14 @@
         <h1>Country Database</h1>
         
         <div>
-            <input type="text" id="countryInput" placeholder="Enter country name" value="USA">
-            <button onclick="addCountry()">Add Country</button>
-            <button onclick="loadCountries()">Load All Countries</button>
+            <input type="text" id="countryInput" placeholder="Enter country name and press Enter" value="USA" onkeypress="handleKeyPress(event)">
         </div>
         
         <div id="status"></div>
         
         <div class="country-list">
             <h3>Countries in Database:</h3>
-            <div id="countryList">Click "Load All Countries" to see the list</div>
+            <div id="countryList">Loading...</div>
         </div>
     </div>
 
@@ -85,6 +83,13 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 // Initialize the Supabase client
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // Show status messages
+function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                addCountry();
+            }
+        }
+
         // Show status messages
         function showStatus(message, isError = false) {
             const statusDiv = document.getElementById('status');
@@ -105,11 +110,12 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
             }
 
             try {
-                const { data, error } = await supabaseClient
+                const { data, error } = await supabase
                     .from('countries')
                     .insert([
                         { 
-                            country: countryName
+                            country: countryName,
+                            created_at: new Date().toISOString()
                         }
                     ]);
                 
@@ -128,12 +134,12 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         }
 
         // Load all countries from database
-       async function loadCountries() {
+        async function loadCountries() {
             try {
-                const { data, error } = await supabaseClient
+                const { data, error } = await supabase
                     .from('countries')
                     .select('id, country')
-                    .order('id', { ascending: false });
+                    .order('id', { ascending: true });
                 
                 if (error) {
                     showStatus(`Error loading countries: ${error.message}`, true);
@@ -155,7 +161,6 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
                 console.error('Error:', error);
             }
         }
-
 
         // Load countries when page loads
         window.onload = function() {
